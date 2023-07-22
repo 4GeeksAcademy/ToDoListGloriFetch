@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
@@ -9,8 +9,54 @@ const Home = () => {
 	const [todo, setTodo] = useState("")
 	const [todolist, setTodolist] = useState([])
 	const [removeshow, setremoveshow] = useState(false);
-	/* const remove = todolist.filter((item, id) => index != id)
-	setTodolist(remove) */
+
+	const todoApi = 'https://fake-todo-list-52f9a4ed80ce.herokuapp.com/todos/user/GlorianaZelaya'
+
+	useEffect(() => {
+		fetch(todoApi).then(result => response => response.json()).then(data => console.log(data)).catch(error => error)
+	}, [])
+
+	//Put
+	function addTodo(todos) {
+		let arrayTodo = [
+			{ label: "Conquistar el mundo", done: false },
+			{ label: "Que mi perro me saque a pasear", done: false },
+			{ label: "Terminarme la ensalada", done: false },
+			{ label: "Lavar", done: true }
+		]
+		let options = {
+			method: 'PUT',
+			body: JSON.stringify([arrayTodo]),
+			headers: {
+				"Content-Type": "application/json",
+			}
+		}
+		fetch(todoApi).then(result => response => response.json()).then(data => console.log(data)).catch(error => error)
+	}
+
+	//Delete b
+	function deleteTask(todos) {
+		fetch(todoApi, {
+			method: 'PUT',
+			body: JSON.stringify(tasks.filter((_, i) => i !== todos)),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).catch(error => error);
+		setTodolist(todolist.filter((_, i) => i !== todos));
+	}
+
+	//Delete All Tasks
+	function MegaDelete(todos) {
+		fetch(todoApi, {
+			method: 'PUT',
+			body: JSON.stringify([]),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).catch(todo => error);
+		setTodolist([]);
+	}
 
 	return (
 		<div className="container">
@@ -46,8 +92,9 @@ const Home = () => {
 					)}</li>
 			))}
 			<li className="TaskLeft">
-				{todolist.length} items left
+				{todolist.length} tasks pending
 			</li>
+			<button className="btn btn-outline-dark" onClick={MegaDelete}>Clear All</button>
 		</div>
 	);
 };
