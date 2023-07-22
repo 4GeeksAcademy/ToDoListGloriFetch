@@ -37,5 +37,5 @@ img{
    
 }
 .button{
-    margin-left: 50%;
+    display: inline-block;
 }
