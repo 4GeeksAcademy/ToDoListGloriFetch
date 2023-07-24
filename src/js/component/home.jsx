@@ -12,27 +12,7 @@ const Home = () => {
 
 	const todoApi = 'https://fake-todo-list-52f9a4ed80ce.herokuapp.com/todos/user/GlorianaZelaya'
 
-	useEffect(() => {
-		fetch(todoApi).then(result => response => response.json()).then(data => console.log(data)).catch(error => error)
-	}, [])
-
 	//Put
-	function addTodo(todos) {
-		let arrayTodo = [
-			{ label: "Conquistar el mundo", done: false },
-			{ label: "Que mi perro me saque a pasear", done: false },
-			{ label: "Terminarme la ensalada", done: false },
-			{ label: "Lavar", done: true }
-		]
-		let options = {
-			method: 'PUT',
-			body: JSON.stringify([arrayTodo]),
-			headers: {
-				"Content-Type": "application/json",
-			}
-		}
-		fetch(todoApi).then(result => response => response.json()).then(data => console.log(data)).catch(error => error)
-	}
 	function addTodo(todos) {
 		fetch(
 			"https://fake-todo-list-52f9a4ed80ce.herokuapp.com/todos/user/GlorianaZelaya",
@@ -58,17 +38,11 @@ const Home = () => {
 			});
 	}
 
-	//Delete b
-	function deleteTask(todos) {
-		fetch(todoApi, {
-			method: 'PUT',
-			body: JSON.stringify(tasks.filter((_, i) => i !== todos)),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).catch(error => error);
-		setTodolist(todolist.filter((_, i) => i !== todos));
-	}
+	//Delete 
+	/* 	function deleteTask(id) {
+			let conc = todolist.filter((item, index) => index !== id);
+			addTodo(conc);
+		} */
 
 	//Delete All Tasks
 	function MegaDelete(todos) {
@@ -80,7 +54,30 @@ const Home = () => {
 			}
 		}).catch(todo => error);
 		setTodolist([]);
+		addTodo([]);
 	}
+
+	//Add new tasks
+	function addTask(e) {
+		if (e.key === "Enter" && e.target.value != "") {
+			setTodolist(todolist.concat({ label: e.target.value, done: false }));
+			let conc = todolist.concat({ label: e.target.value, done: false });
+			addTodo(conc);
+			setTodo("");
+		}
+	}
+	function getTask() {
+		fetch(
+			"https://fake-todo-list-52f9a4ed80ce.herokuapp.com/todos/user/GlorianaZelaya"
+		)
+			.then((response) => response.json())
+			.then((data) => setTodolist(data))
+			.catch((err) => console.log(err));
+	}
+
+	useEffect(() => {
+		getTask();
+	}, []);
 
 	return (
 		<div className="container">
@@ -91,10 +88,7 @@ const Home = () => {
 				}
 				}
 				onKeyDown={(e) => {
-					e.key === "Enter" ? setTodolist(todolist.concat(todo))
-						: null;
-					e.key === "Enter" ? setTodo("")
-						: null;
+					addTask(e);
 				}
 				}></input>
 			{todolist.map((task, index) => (
@@ -110,6 +104,7 @@ const Home = () => {
 								setTodolist(
 									todolist.filter(
 										(a, id) => id !== index
+
 									)
 								);
 							}}></img>
